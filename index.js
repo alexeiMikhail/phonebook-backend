@@ -3,7 +3,7 @@ const app = express()
 
 const morgan = require('morgan')
 
-console.log(morgan('tiny')); 
+app.use(morgan('tiny'))
 
 let persons = [
   { 
