@@ -93,7 +93,7 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  if (persons.some(p => p.name === body.name)) {
+  if (persons.some(p => p.name.toLowerCase() === body.name.toLowerCase())) {
     return response.status(400).json({ 
       error: `${body.name} already exists in phonebook, name must be unique` 
     })
