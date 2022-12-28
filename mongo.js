@@ -13,8 +13,15 @@ const password = process.argv[2]
 const url = `mongodb+srv://admin:${password}@fsocluster.d3tnact.mongodb.net/phonebook?retryWrites=true&w=majority`
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    required: true
+  }
 })
 
 const Person = mongoose.model('Person', personSchema)
