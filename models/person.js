@@ -20,7 +20,14 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String, 
-    required: true
+    minLength: 8,
+    required: true,
+    validate: {
+      validator: (phoneNumber) => {
+        const pattern = /^\d{2,3}-?\d{6,}$/;
+        return pattern.test(phoneNumber);
+      }
+    }
   }
 })
 
