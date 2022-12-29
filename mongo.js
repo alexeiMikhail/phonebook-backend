@@ -4,7 +4,7 @@ mongoose.set('strictQuery', true)
 const argc = process.argv.length
 
 if (argc !== 3 && argc !== 5) {
-  console.log("Usage: node mongo.js <password> [<name> <number>]")
+  console.log('Usage: node mongo.js <password> [<name> <number>]')
   process.exit(1)
 }
 
@@ -29,9 +29,9 @@ const Person = mongoose.model('Person', personSchema)
 const printPhonebook = () => {
   mongoose
     .connect(url)
-    .then(res => {
+    .then(() => {
       Person.find({}).then(persons => {
-        console.log("phonebook:")
+        console.log('phonebook:')
         persons.forEach(person => {
           console.log(person.name, person.number)
         })
@@ -44,7 +44,7 @@ const printPhonebook = () => {
 const addPerson = () => {
   mongoose
     .connect(url)
-    .then(res => {
+    .then(() => {
       const person = new Person({
         name: process.argv[3],
         number: process.argv[4]

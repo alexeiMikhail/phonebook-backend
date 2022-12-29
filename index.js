@@ -7,8 +7,8 @@ const morgan = require('morgan')
 app.use(express.static('build'))
 app.use(express.json())
 
-morgan.token('body', (req, res) => {
-  return JSON.stringify(req.body) 
+morgan.token('body', (req) => {
+  return JSON.stringify(req.body)
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
@@ -28,7 +28,7 @@ app.get('/api/persons', (request, response, next) => {
 })
 
 app.get('/info', (request, response, next) => {
-  const count = Person.countDocuments()
+  Person.countDocuments()
     .then(res => {
       const date = new Date()
       response.send(
@@ -54,9 +54,9 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(err => next(err))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(res => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(err => next(err))
@@ -64,16 +64,16 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
-  
+
   if (!body.name) {
-    return response.status(400).json({ 
-      error: 'name missing' 
+    return response.status(400).json({
+      error: 'name missing'
     })
   }
 
   if (!body.number) {
-    return response.status(400).json({ 
-      error: 'number missing' 
+    return response.status(400).json({
+      error: 'number missing'
     })
   }
 
@@ -90,17 +90,18 @@ app.post('/api/persons', (request, response, next) => {
         number: body.number
       })
 
-      person.save().then(savedPerson => {
-        response.json(savedPerson)
-      })
-      .catch(err => next(err))
+      person.save()
+        .then(savedPerson => {
+          response.json(savedPerson)
+        })
+        .catch(err => next(err))
     })
     .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
-  console.log("request body", body)
+  console.log('request body', body)
   const person = {
     name: body.name,
     number: body.number,
@@ -109,8 +110,8 @@ app.put('/api/persons/:id', (request, response, next) => {
   console.log('person variable', person)
 
   Person.findByIdAndUpdate(
-    request.params.id, 
-    person, 
+    request.params.id,
+    person,
     { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       console.log('updatedPerson', updatedPerson)
