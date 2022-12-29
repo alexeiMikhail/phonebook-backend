@@ -64,7 +64,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
-
+  
   if (!body.name) {
     return response.status(400).json({ 
       error: 'name missing' 
@@ -76,16 +76,26 @@ app.post('/api/persons', (request, response, next) => {
       error: 'number missing' 
     })
   }
-  
-  const person = new Person({
-    name: body.name,
-    number: body.number
-  })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
-  .catch(err => next(err))
+  Person.find({ name: body.name })
+    .then(res => {
+      if (res[0]) {
+        return response.status(400).json({
+          error: 'name already exists in db'
+        }).end()
+      }
+
+      const person = new Person({
+        name: body.name,
+        number: body.number
+      })
+
+      person.save().then(savedPerson => {
+        response.json(savedPerson)
+      })
+      .catch(err => next(err))
+    })
+    .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
